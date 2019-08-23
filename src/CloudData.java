@@ -41,7 +41,7 @@ public class CloudData {
 			convection = new float[dimt][dimx][dimy];
 			for(int t = 0; t < dimt; t++)
 				for(int x = 0; x < dimx; x++)
-					for(int y = 0; y < dimy; y++){
+					for(int y = 0; y < dimy; y++) {
 						advection[t][x][y] = new Vector();
 						advection[t][x][y].x = sc.nextFloat();
 						advection[t][x][y].y = sc.nextFloat();
