@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.IOException;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.io.FileWriter;
 import java.io.PrintWriter;
@@ -54,7 +55,7 @@ public class CloudData {
 			System.out.println("Unable to open input file "+fileName);
 			e.printStackTrace();
 		}
-		catch (java.util.InputMismatchException e){ 
+		catch (InputMismatchException e){ 
 			System.out.println("Malformed input file "+fileName);
 			e.printStackTrace();
 		}
