@@ -2,9 +2,11 @@ import java.util.concurrent.ForkJoinPool;
 
 public class CloudClassification {
 
+    static CloudData data = new CloudData();
+    static float averageWindVector[][];
+
     static long startTime = 0;
     static final ForkJoinPool fjPool = new ForkJoinPool();
-    static float averageWindVector[][];
 
     private static void tick(){
         startTime = System.currentTimeMillis();
@@ -18,6 +20,10 @@ public class CloudClassification {
      * @param args
      */
     public static void main(String[] args) {
+
+        data.readData("simplesample_input.txt");
+        displayInput();
+
         tick();
         //int sumArr = sum(arr);
         float time = tock();
@@ -33,6 +39,22 @@ public class CloudClassification {
         System.out.println("Sum is:");
         //System.out.println(sumArr);
 
+    }
+
+    /**
+     * Displaying the input data to ensure it is being read in correctly
+     * Each value of 't' is separated by a space
+     */
+    public static void displayInput(){
+        for(int t = 0; t < data.dimt; t++) {
+            for (int x = 0; x < data.dimx; x++) {
+                for (int y = 0; y < data.dimy; y++) {
+                    System.out.println(data.advection[t][x][y]);
+                    System.out.println(data.convection[t][x][y]);
+                }
+            }
+            System.out.println();
+        }
     }
 
 }

@@ -8,7 +8,7 @@ import java.util.Vector;
 
 public class CloudData {
 
-	float [][][] advection; // in-plane regular grid of wind vectors, that evolve over time
+	Vector[][][] advection; // in-plane regular grid of wind vectors, that evolve over time
 	float [][][] convection; // vertical air movement strength, that evolves over time
 	int [][][] classification; // cloud type per grid point, evolving over time
 	int dimx, dimy, dimt; // data dimensions
@@ -37,14 +37,15 @@ public class CloudData {
 			dimy = sc.nextInt();
 			
 			// initialize and load advection (wind direction and strength) and convection
-			advection = new float[dimt][dimx][dimy];
+			advection = new Vector[dimt][dimx][dimy];
 			convection = new float[dimt][dimx][dimy];
 			for(int t = 0; t < dimt; t++) {
+				Scanner line = new Scanner(sc.nextLine()).useDelimiter(" ");
 				for (int x = 0; x < dimx; x++) {
 					for (int y = 0; y < dimy; y++) {
-						advection[t][x][y] = new float[][][];
-						advection[t][x][y] = sc.nextFloat();
-						advection[t][x][y] = sc.nextFloat();
+						advection[t][x][y] = new Vector();
+						advection[t][x][y].add(sc.nextFloat());
+						advection[t][x][y].add(sc.nextFloat());
 						convection[t][x][y] = sc.nextFloat();
 					}
 				}
@@ -69,7 +70,7 @@ public class CloudData {
 			 FileWriter fileWriter = new FileWriter(fileName);
 			 PrintWriter printWriter = new PrintWriter(fileWriter);
 			 printWriter.printf("%d %d %d\n", dimt, dimx, dimy);
-			 printWriter.printf("%f %f\n", wind.x, wind.y);
+			 //printWriter.printf("%f %f\n", wind.x, wind.y);
 			 
 			 for(int t = 0; t < dimt; t++){
 				 for(int x = 0; x < dimx; x++){
