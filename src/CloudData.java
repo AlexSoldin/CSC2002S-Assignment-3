@@ -4,7 +4,6 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.io.FileWriter;
 import java.io.PrintWriter;
-import java.util.Vector;
 
 public class CloudData {
 
@@ -40,12 +39,11 @@ public class CloudData {
 			advection = new Vector[dimt][dimx][dimy];
 			convection = new float[dimt][dimx][dimy];
 			for(int t = 0; t < dimt; t++) {
-				Scanner line = new Scanner(sc.nextLine()).useDelimiter(" ");
 				for (int x = 0; x < dimx; x++) {
 					for (int y = 0; y < dimy; y++) {
 						advection[t][x][y] = new Vector();
-						advection[t][x][y].add(sc.nextFloat());
-						advection[t][x][y].add(sc.nextFloat());
+						advection[t][x][y].setX(sc.nextFloat());
+						advection[t][x][y].setY(sc.nextFloat());
 						convection[t][x][y] = sc.nextFloat();
 					}
 				}
