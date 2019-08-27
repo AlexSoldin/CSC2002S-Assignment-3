@@ -50,13 +50,17 @@ public class Vector {
     /**
      * Accumulates x and y components in one vector
      * Used for sums and averages
-     * @param add
+     * @param add vector to add components to current x and y values
      */
     public void add(Vector add){
         x += add.x;
         y += add.y;
     }
 
+    /**
+     * Calculates the magnitude of the x and y components
+     * @return magnitude
+     */
     public float getMagnitude(){
         double mag = Math.pow(x, 2) + Math.pow(y, 2);
         return (float) Math.sqrt(mag);
