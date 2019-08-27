@@ -31,6 +31,8 @@ public class CloudClassification {
 
         sequentialStopWatch();
 
+        sequentialCloudClassification();
+
         tick();
         //int sumArr = sum(arr);
         time = tock();
@@ -48,21 +50,49 @@ public class CloudClassification {
 
     }
 
+    /**
+     * A stopwatch method to time each sequential run of the program
+     */
     static void sequentialStopWatch(){
         tick();
         sequentialWindVelocity();
         float time = tock();
-        System.out.println("Sequential run 1 took "+ time +" seconds\n");
+        System.out.println("1 - Sequential averageWindVector took "+ time +" seconds\n");
 
         tick();
         sequentialWindVelocity();
         time = tock();
-        System.out.println("Sequential run 2 took "+ time +" seconds\n");
+        System.out.println("2 - Sequential averageWindVector took "+ time +" seconds\n");
 
         tick();
         sequentialWindVelocity();
         time = tock();
-        System.out.println("Sequential run 3 took "+ time +" seconds\n");
+        System.out.println("3 - Sequential averageWindVector took "+ time +" seconds\n");
+    }
+
+    static void sequentialCloudClassification(){
+
+        for (int t = 0; t < data.dimt; t++) {
+            for (int x = 0; x < data.dimx; x++) {
+                for (int y = 0; y < data.dimy; y++) {
+
+                    if(Math.abs(data.convection[t][x][y])>data.advection[t][x][y].getMagnitude()){
+                        data.classification[t][x][y] = 0;
+                        System.out.print(0+" ");
+                    }
+                    else if(Math.abs(data.convection[t][x][y])>0.2){
+                        data.classification[t][x][y] = 1;
+                        System.out.print(1+" ");
+                    }
+                    else{
+                        data.classification[t][x][y] = 2;
+                        System.out.print(2+" ");
+                    }
+
+                }
+            }
+            System.out.println();
+        }
     }
 
 

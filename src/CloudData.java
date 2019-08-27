@@ -68,7 +68,7 @@ public class CloudData {
 			 FileWriter fileWriter = new FileWriter(fileName);
 			 PrintWriter printWriter = new PrintWriter(fileWriter);
 			 printWriter.printf("%d %d %d\n", dimt, dimx, dimy);
-			 //printWriter.printf("%f %f\n", wind.x, wind.y);
+			 printWriter.printf("%f %f\n", wind.getX(), wind.getY());
 			 
 			 for(int t = 0; t < dimt; t++){
 				 for(int x = 0; x < dimx; x++){
