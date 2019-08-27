@@ -1,13 +1,10 @@
 import java.util.concurrent.RecursiveTask;
 
-public class Cloud extends RecursiveTask<Float> {
+public class Cloud extends RecursiveTask<Vector> {
     int start;
     int end;
     Vector arr[][][];
     static final int SEQUENTIAL_CUTOFF = 500;
-
-    //float ans[] = {0, 0};
-    int ans = 0;
 
     CloudData data = new CloudData();
 
@@ -29,8 +26,8 @@ public class Cloud extends RecursiveTask<Float> {
      * Compute method that is necessary as this class extends recursive task
      */
 
-    protected Float compute() {
-        float ans = 0;
+    protected Vector compute() {
+        Vector ans = new Vector();
         /*
         if ((end - start) < SEQUENTIAL_CUTOFF) {
 
@@ -54,24 +51,6 @@ public class Cloud extends RecursiveTask<Float> {
         }
         */
          return ans;
-    }
-
-
-    public Vector sequential() {
-        Vector ans = new Vector();
-        float count = 0;
-
-        for (int t = 0; t < data.dimt; t++) {
-            for (int x = 0; x < data.dimx; x++) {
-                for (int y = 0; y < data.dimy; y++) {
-                    ans.add(ans);
-                    count++;
-                }
-            }
-        }
-
-        return ans;
-
     }
 
 }

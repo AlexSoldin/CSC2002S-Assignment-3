@@ -1,3 +1,5 @@
+import java.text.DecimalFormat;
+
 public class Vector {
 
     /**
@@ -5,6 +7,7 @@ public class Vector {
      */
     private float x;
     private float y;
+    private DecimalFormat df = new DecimalFormat("#.###");
 
     /**
      * Parameterised contructor
@@ -60,5 +63,9 @@ public class Vector {
     @Override
     public String toString() {
         return "["+x+", "+y+"]";
+    }
+
+    public String roundedString(){
+        return "["+df.format(x)+", "+df.format(y)+"]";
     }
 }
