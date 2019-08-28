@@ -66,6 +66,10 @@ public class Vector {
         return (float) Math.sqrt(mag);
     }
 
+    public Vector combine(Vector v){
+        return new Vector(x + v.getX(),y + v.getY());
+    }
+
     /**
      * Overriding the toString method
      * @return personalised message

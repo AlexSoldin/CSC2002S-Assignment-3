@@ -16,9 +16,9 @@ public class CloudClassification {
         return (System.currentTimeMillis() - startTime) / 1000.0f;
     } //time in seconds
 
-    //static int sum(float[][][] arr){
-        //return fjPool.invoke(new Cloud(data.advection,0, data.dimt));
-    //}
+    static Vector sum(float[] arr){
+        return fjPool.invoke(new Cloud(arr,0, data.linear.length));
+    }
 
     /**
      * Main Method
@@ -29,7 +29,13 @@ public class CloudClassification {
         getData();
         displayInput();
 
-        sequentialStopWatch();
+        //sequentialStopWatch();
+
+        tick();
+
+        time = tock();
+        System.out.println("Run took "+ time +" seconds");
+
 
 
         tick();
@@ -47,6 +53,23 @@ public class CloudClassification {
         System.out.println("Sum is:");
         //System.out.println(sumArr);
 
+    }
+
+    /**
+     * A stopwatch method to time each parallel run of the program
+     */
+    static void parallelStopWatch(){
+
+    }
+
+    /**
+     * Calculate average wind velocity using Fork-Join Pool method
+     */
+    static void FJPool(){
+        Vector ans = sum(data.linear);
+        ans.setX(ans.getX()/data.dim());
+        ans.setY(ans.getY()/data.dim());
+        System.out.println("WindAverageParallel = "+ans.roundedString()+"\n");
     }
 
     /**

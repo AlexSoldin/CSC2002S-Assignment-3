@@ -1,23 +1,21 @@
 import java.util.concurrent.RecursiveTask;
 
 public class Cloud extends RecursiveTask<Vector> {
-    int start;
-    int end;
-    Vector arr[][][];
+    int lo;
+    int hi;
+    float arr[];
     static final int SEQUENTIAL_CUTOFF = 500;
-
-    CloudData data = new CloudData();
 
     /**
      * Parameterised constructor
      *
      * @param a vector array containing wind data
-     * @param s start value
-     * @param e end value
+     * @param l start value
+     * @param h end value
      */
-    Cloud(Vector[][][] a, int s, int e) {
-        this.start = s;
-        this.end = e;
+    Cloud(float[] a, int l, int h) {
+        this.lo = l;
+        this.hi = h;
         this.arr = a;
     }
 
@@ -27,30 +25,26 @@ public class Cloud extends RecursiveTask<Vector> {
      */
 
     protected Vector compute() {
-        Vector ans = new Vector();
-        /*
-        if ((end - start) < SEQUENTIAL_CUTOFF) {
-
-            for (int t = 0; t < data.dimt; t++) {
-                for (int x = 0; x < data.dimx; x++) {
-                    for (int y = 0; y < data.dimy; y++) {
-                        ans += (float) arr[t][x][y].get(0);
-                        //ans[1] += (float) arr[t][x][y].get(1);
-                    }
-                }
+        if((hi-lo) < SEQUENTIAL_CUTOFF) {
+            Vector ans = new Vector();
+            for(int i=lo; i < hi; i++) {
+                ans.setX(ans.getX()+arr[i++]);
+                ans.setY(ans.getY()+arr[i++]);
             }
-            return ans;
-        } else {
-            Cloud left = new Cloud(arr, start, (end + start) / 2);
-            Cloud right = new Cloud(arr, (end + start) / 2, end);
-            left.fork();
 
-            int rightAns = right.compute();
-            int leftAns = left.join();
-            return leftAns + rightAns;
+            return ans;
         }
-        */
-         return ans;
+        else {
+            Cloud left = new Cloud(arr,lo,(hi+lo)/2);
+            Cloud right= new Cloud(arr,(hi+lo)/2,hi);
+
+            // order of next 4 lines
+            // essential – why?
+            left.fork();
+            Vector rightAns = right.compute();
+            Vector leftAns  = left.join();
+            return rightAns.combine(leftAns);
+        }
     }
 
 }
