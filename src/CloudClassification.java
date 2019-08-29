@@ -16,7 +16,7 @@ public class CloudClassification {
         return (System.currentTimeMillis() - startTime) / 1000.0f;
     } //time in seconds
 
-    static Vector sum(float[] arr){
+    static Vector FJ(float[] arr){
         return fjPool.invoke(new Cloud(arr,0, data.linear.length));
     }
 
@@ -27,14 +27,11 @@ public class CloudClassification {
     public static void main(String[] args) {
 
         getData();
-        displayInput();
+        //displayInput();
 
-        //sequentialStopWatch();
+        parallelStopWatch();
 
-        tick();
-
-        time = tock();
-        System.out.println("Run took "+ time +" seconds");
+        sequentialStopWatch();
 
 
 
@@ -60,13 +57,21 @@ public class CloudClassification {
      */
     static void parallelStopWatch(){
 
+        for (int i = 0; i < 10; i++) {
+            System.out.println("Run "+(i+1)+":");
+            tick();
+            FJPool();
+            float time = tock();
+            System.out.println((i+1)+" - parallelWindVector took "+ time +" seconds\n");
+        }
+
     }
 
     /**
-     * Calculate average wind velocity using Fork-Join Pool method
+     * Calculate average wind velocity using Fork-Join framework
      */
     static void FJPool(){
-        Vector ans = sum(data.linear);
+        Vector ans = FJ(data.linear);
         ans.setX(ans.getX()/data.dim());
         ans.setY(ans.getY()/data.dim());
         System.out.println("WindAverageParallel = "+ans.roundedString()+"\n");
@@ -77,36 +82,33 @@ public class CloudClassification {
      */
     static void sequentialStopWatch(){
 
-        //average wind
         for (int i = 0; i < 10; i++) {
+            System.out.println("Run "+(i+1)+":");
             tick();
-            sequentialWindVelocity();
+            sequentialMethod();
             float time = tock();
-            System.out.println((i+1)+" - sequentialWindVector took "+ time +" seconds\n");
-        }
-
-        //cloud classification
-        for (int i = 0; i < 10; i++) {
-            tick();
-            sequentialCloudClassification();
-            float time = tock();
-            System.out.println((i+1)+" - sequentialCloudClassification took "+ time +" seconds\n");
+            System.out.println((i+1)+" - sequentialMethod took "+ time +" seconds\n");
         }
 
     }
 
     /**
+     * Calculate average wind velocity using sequential methods
      * Classify different clouds and assign them codes
      * 0 - cumulus
      * 1 - striated stratus
-     * 2 - Hamorphous stratus
+     * 2 - amorphous stratus
      */
-    static void sequentialCloudClassification(){
+    static void sequentialMethod(){
+        Vector velocity = new Vector();
         Vector[][][] averageWind = new Vector[data.dimt][data.dimx][data.dimy];
+        String out = "";
 
         for (int t = 0; t < data.dimt; t++) {
             for (int x = 0; x < data.dimx; x++) {
                 for (int y = 0; y < data.dimy; y++) {
+                    velocity.add(data.advection[t][x][y]);
+
                     int count = 1;
 
                     averageWind[t][x][y] = new Vector();
@@ -158,45 +160,26 @@ public class CloudClassification {
 
                     if(Math.abs(data.convection[t][x][y])>averageWind[t][x][y].getMagnitude()){
                         data.classification[t][x][y] = 0;
-                        System.out.print(0+" ");
+                        out+= 0+" ";
                     }
                     else if(averageWind[t][x][y].getMagnitude()>0.2 && averageWind[t][x][y].getMagnitude()>=Math.abs(data.convection[t][x][y])){
                         data.classification[t][x][y] = 1;
-                        System.out.print(1+" ");
+                        out += 1+" ";
                     }
                     else{
                         data.classification[t][x][y] = 2;
-                        System.out.print(2+" ");
+                        out += 2+" ";
                     }
 
                 }
             }
-            System.out.println();
+            out += "\n";
         }
-    }
-
-
-    /**
-     * Calculate average wind velocity using sequential methods
-     */
-    static void sequentialWindVelocity() {
-        Vector velocity = new Vector();
-        float count = 0;
-
-        for (int t = 0; t < data.dimt; t++) {
-            for (int x = 0; x < data.dimx; x++) {
-                for (int y = 0; y < data.dimy; y++) {
-                    velocity.add(data.advection[t][x][y]);
-                    count++;
-                }
-            }
-        }
-        velocity.setX((velocity.getX()/count));
-        velocity.setY((velocity.getY()/count));
+        velocity.setX((velocity.getX()/data.dim()));
+        velocity.setY((velocity.getY()/data.dim()));
         System.out.println("WindAverageSequential = "+velocity.roundedString()+"\n");
-
+        System.out.println(out);
     }
-
 
     /**
      * Displaying the input data to ensure it is being read in correctly
@@ -223,6 +206,8 @@ public class CloudClassification {
      */
     public static void getData(){
         data.readData("simplesample_input.txt");
+        //data.readData("largesample_input.txt");
+        //System.out.print("Enter the file name: ");
         //Scanner in = new Scanner(System.in);
         //String file = in.nextLine();
         //data.readData(file);
