@@ -33,23 +33,6 @@ public class CloudClassification {
 
         sequentialStopWatch();
 
-
-
-        tick();
-        //int sumArr = sum(arr);
-        time = tock();
-        System.out.println("Run took "+ time +" seconds");
-
-        System.out.println("Sum is:");
-        //System.out.println(sumArr);
-        tick();
-        //sumArr = sum(arr);
-        time = tock();
-        System.out.println("Second run took "+ time +" seconds");
-
-        System.out.println("Sum is:");
-        //System.out.println(sumArr);
-
     }
 
     /**
@@ -62,7 +45,7 @@ public class CloudClassification {
             tick();
             FJPool();
             float time = tock();
-            System.out.println((i+1)+" - parallelWindVector took "+ time +" seconds\n");
+            System.out.println((i+1)+" - parallelMethod took "+ time +" seconds\n");
         }
 
     }
@@ -74,7 +57,7 @@ public class CloudClassification {
         Vector ans = FJ(data.linear);
         ans.setX(ans.getX()/data.dim());
         ans.setY(ans.getY()/data.dim());
-        System.out.println("WindAverageParallel = "+ans.roundedString()+"\n");
+        System.out.println("WindAverageParallel = "+ans.toString()+"\n");
     }
 
     /**
@@ -109,53 +92,17 @@ public class CloudClassification {
                 for (int y = 0; y < data.dimy; y++) {
                     velocity.add(data.advection[t][x][y]);
 
-                    int count = 1;
-
                     averageWind[t][x][y] = new Vector();
-                    averageWind[t][x][y].add(data.advection[t][x][y]);
-
-                    if(x!=0){
-                        averageWind[t][x][y].add(data.advection[t][x-1][y]);
-                        count++;
+                    int surrounding = 0;
+                    for (int l = Math.max(0, x-1); l < Math.min(data.dimx, x+2); l++) {
+                        for (int m = Math.max(0, y - 1); m < Math.min(data.dimy, y + 2); m++) {
+                            averageWind[t][x][y].add(data.advection[t][l][m]);
+                            surrounding++;
+                        }
                     }
 
-                    if(y!=0){
-                        averageWind[t][x][y].add(data.advection[t][x][y-1]);
-                        count++;
-                    }
-
-                    if(x!=0 && y!=0){
-                        averageWind[t][x][y].add(data.advection[t][x-1][y-1]);
-                        count++;
-                    }
-
-                    if(x!=data.dimx-1){
-                        averageWind[t][x][y].add(data.advection[t][x+1][y]);
-                        count++;
-                    }
-
-                    if(y!=data.dimy-1){
-                        averageWind[t][x][y].add(data.advection[t][x][y+1]);
-                        count++;
-                    }
-
-                    if(x!=data.dimx-1 && y!=data.dimy-1){
-                        averageWind[t][x][y].add(data.advection[t][x+1][y+1]);
-                        count++;
-                    }
-
-                    if(x!=0 && y!=data.dimy-1){
-                        averageWind[t][x][y].add(data.advection[t][x-1][y+1]);
-                        count++;
-                    }
-
-                    if(y!=0 && x!=data.dimx-1){
-                        averageWind[t][x][y].add(data.advection[t][x+1][y-1]);
-                        count++;
-                    }
-
-                    averageWind[t][x][y].setX(averageWind[t][x][y].getX()/count);
-                    averageWind[t][x][y].setY(averageWind[t][x][y].getY()/count);
+                    averageWind[t][x][y].setX(averageWind[t][x][y].getX()/surrounding);
+                    averageWind[t][x][y].setY(averageWind[t][x][y].getY()/surrounding);
 
 
                     if(Math.abs(data.convection[t][x][y])>averageWind[t][x][y].getMagnitude()){
@@ -177,7 +124,7 @@ public class CloudClassification {
         }
         velocity.setX((velocity.getX()/data.dim()));
         velocity.setY((velocity.getY()/data.dim()));
-        System.out.println("WindAverageSequential = "+velocity.roundedString()+"\n");
+        System.out.println("WindAverageSequential = "+velocity.toString()+"\n");
         System.out.println(out);
     }
 

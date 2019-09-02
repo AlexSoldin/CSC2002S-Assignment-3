@@ -66,6 +66,11 @@ public class Vector {
         return (float) Math.sqrt(mag);
     }
 
+    /**
+     * Combines the current vector with the vector sent in to form a single vector
+     * @param v
+     * @return new vector
+     */
     public Vector combine(Vector v){
         return new Vector(x + v.getX(),y + v.getY());
     }

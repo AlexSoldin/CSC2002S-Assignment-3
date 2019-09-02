@@ -23,7 +23,6 @@ public class Cloud extends RecursiveTask<Vector> {
     /**
      * Compute method that is necessary as this class extends recursive task
      */
-
     protected Vector compute() {
         if((hi-lo) < SEQUENTIAL_CUTOFF) {
             Vector ans = new Vector();
@@ -38,8 +37,6 @@ public class Cloud extends RecursiveTask<Vector> {
             Cloud left = new Cloud(arr,lo,(hi+lo)/2);
             Cloud right= new Cloud(arr,(hi+lo)/2,hi);
 
-            // order of next 4 lines
-            // essential – why?
             left.fork();
             Vector rightAns = right.compute();
             Vector leftAns  = left.join();
