@@ -35,12 +35,16 @@ public class Resultant {
         this.velocity = velocity;
     }
 
+    /**
+     * Overriding the toString method
+     * @return personalised output message
+     */
     public String toString(){
         String out = data.dimt+" "+data.dimx+" "+data.dimy+"\n";
-        out+= velocity.getX()+" "+velocity.getY()+"\n";
+        out+= velocity.getAverage()+"\n";
         for (int i = 0; i < data.dimt; i++) {
-            for (int j = 0; j < data.dim()/data.dimt; j++) {
-                out+=data.linearClassification[i+j]+" ";
+            for (int j = 0; j < data.dimx*data.dimy; j++) {
+                out+=data.linearClassification[i*data.dimx*data.dimy+j]+" ";
             }
             out+="\n";
         }

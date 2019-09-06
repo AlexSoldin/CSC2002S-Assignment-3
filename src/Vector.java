@@ -65,6 +65,10 @@ public class Vector {
         y += add.y;
     }
 
+    /**
+     * Calculates the average of the x and y components
+     * @return new vector object
+     */
     public Vector getAverage(){
         return new Vector(x/count, y/count);
     }
@@ -89,11 +93,11 @@ public class Vector {
 
     /**
      * Overriding the toString method
-     * @return personalised message
+     * @return personalised output message
      */
     @Override
     public String toString() {
-        return "["+x+", "+y+"]";
+        return x+" "+y;
     }
 
 

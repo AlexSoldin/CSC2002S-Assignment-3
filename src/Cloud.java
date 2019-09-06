@@ -24,13 +24,14 @@ public class Cloud extends RecursiveTask<Resultant> {
 
     /**
      * Compute method that is necessary as this class extends recursive task
+     * Since this method needs to return the cloud classification as well as velocity, it is of type Resultant which holds both these variables
      */
     protected Resultant compute() {
 
         if((hi-lo) < SEQUENTIAL_CUTOFF) {
-            Vector windData = new Vector();
             Vector velocity = new Vector();
-            Vector average;
+            Vector windData = new Vector();
+            Vector averageWind;
 
             int xComponent;
             int yComponent;
@@ -41,9 +42,9 @@ public class Cloud extends RecursiveTask<Resultant> {
             boolean topLeft;
             boolean bottomLeft;
 
-            int current = lo/3;
-            current = current % (data.dim()/data.dimt);
             int count = lo%3;
+            int current = lo/3;
+            current = current % (data.dimx*data.dimy);
 
             for(int i=lo; i < hi; i+=3) {
                 xComponent = i;
@@ -55,13 +56,13 @@ public class Cloud extends RecursiveTask<Resultant> {
                 topLeft = false;
                 bottomLeft = false;
 
+                velocity.setX(velocity.getX() + data.linearAdvection[xComponent]);
+                velocity.setY(velocity.getY() + data.linearAdvection[yComponent]);
+                velocity.setCount(velocity.getCount()+1);
+
                 windData.setX(windData.getX() + data.linearAdvection[xComponent]);
                 windData.setY(windData.getY() + data.linearAdvection[yComponent]);
                 windData.setCount(windData.getCount()+1);
-
-                velocity.setX(windData.getX() + data.linearAdvection[xComponent]);
-                velocity.setY(windData.getY() + data.linearAdvection[yComponent]);
-                velocity.setCount(windData.getCount()+1);
 
                 if (current % data.dimx != 0){
                     windData.setX(windData.getX() + data.linearAdvection[xComponent-3]);
@@ -87,7 +88,7 @@ public class Cloud extends RecursiveTask<Resultant> {
                     windData.setX(windData.getX() + data.linearAdvection[xComponent - data.dimx*3]);
                     windData.setY(windData.getY() + data.linearAdvection[yComponent - data.dimx*3]);
                     windData.setCount(windData.getCount()+1);
-                    if (current % data.dimx != 0 && topLeft == false) {
+                    if (current % data.dimx != 0 && !topLeft) {
                         //add above left
                         windData.setX(windData.getX() + data.linearAdvection[xComponent - data.dimx*3 - 3]);
                         windData.setY(windData.getY() + data.linearAdvection[yComponent - data.dimx*3 - 3]);
@@ -113,41 +114,41 @@ public class Cloud extends RecursiveTask<Resultant> {
                         windData.setCount(windData.getCount()+1);
                         bottomRight = true;
                     }
-                    if (current >= data.dimx && topRight == false) {
+                    if (current >= data.dimx && !topRight) {
                         //add above right
                         windData.setX(windData.getX() + data.linearAdvection[xComponent - data.dimx*3 + 3]);
                         windData.setY(windData.getY() + data.linearAdvection[yComponent - data.dimx*3 + 3]);
                         windData.setCount(windData.getCount()+1);
                     }
                 }
-                if ((current + data.dimx) < data.dimx * data.dimy) {
+                if ((current + data.dimx) < data.dimx*data.dimy) {
                     //add bottom
                     windData.setX(windData.getX() + data.linearAdvection[xComponent + data.dimx * 3]);
                     windData.setY(windData.getY() + data.linearAdvection[yComponent + data.dimx * 3]);
                     windData.setCount(windData.getCount()+1);
-                    if (current % data.dimx != 0 && bottomLeft == false) {
+                    if (current % data.dimx != 0 && !bottomLeft) {
                         //add bottom left
                         windData.setX(windData.getX() + data.linearAdvection[xComponent + data.dimx * 3 - 3]);
                         windData.setY(windData.getY() + data.linearAdvection[yComponent + data.dimx * 3 - 3]);
                         windData.setCount(windData.getCount()+1);
                     }
-                    if ((current + 1) % data.dimx != 0 && bottomRight == false) {
+                    if ((current + 1) % data.dimx != 0 && !bottomRight) {
                         //add bottom right
                         windData.setX(windData.getX() + data.linearAdvection[xComponent + data.dimx * 3 + 3]);
                         windData.setY(windData.getY() + data.linearAdvection[yComponent + data.dimx * 3 + 3]);
                         windData.setCount(windData.getCount()+1);
                     }
                 }
-                current += 1;
-                if (current == data.dim()/data.dimt) {
+                current++;
+                if (current == data.dimx*data.dimy) {
                     current = 0;
                 }
 
-                average = windData.getAverage();
+                averageWind = windData.getAverage();
 
-                if (Math.abs(data.linearAdvection[uComponent]) > average.getMagnitude()) {
+                if (Math.abs(data.linearAdvection[uComponent]) > averageWind.getMagnitude()) {
                     data.linearClassification[count] = 0;
-                } else if (average.getMagnitude() > 0.2) {
+                } else if (averageWind.getMagnitude() > 0.2 && averageWind.getMagnitude()>=Math.abs(data.linearAdvection[uComponent])){
                     data.linearClassification[count] = 1;
                 } else {
                     data.linearClassification[count] = 2;
@@ -171,13 +172,13 @@ public class Cloud extends RecursiveTask<Resultant> {
             left.fork();
             Resultant rightAns = right.compute();
             Resultant leftAns  = left.join();
-            Vector windData = leftAns.velocity.combine(rightAns.velocity);
+            Vector velocity = leftAns.velocity.combine(rightAns.velocity);
             int begin = middle / 3;
             for (int i = middle; i < hi; i += 3) {
                 leftAns.data.linearClassification[begin] = rightAns.data.linearClassification[begin];
                 begin++;
             }
-            leftAns.velocity = windData;
+            leftAns.velocity = velocity;
             return leftAns;
         }
     }

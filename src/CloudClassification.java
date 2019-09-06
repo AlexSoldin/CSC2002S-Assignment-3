@@ -40,7 +40,7 @@ public class CloudClassification {
      */
     static void parallelStopWatch(){
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 2; i++) {
             System.out.println("Run "+(i+1)+":");
             tick();
             FJPool();
@@ -63,7 +63,7 @@ public class CloudClassification {
      */
     static void sequentialStopWatch(){
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 2; i++) {
             System.out.println("Run "+(i+1)+":");
             tick();
             sequentialMethod();
@@ -84,7 +84,7 @@ public class CloudClassification {
         Vector[][][] averageWind = new Vector[data.dimt][data.dimx][data.dimy];
         averageWind[t][x][y] = new Vector();
         averageWind[t][x][y].add(data.advection[t][x][y]);
-        int count = 1;
+        averageWind[t][x][y].setCount(averageWind[t][x][y].getCount()+1);
 
 //                    int surrounding = 0;
 //                    for (int l = Math.max(0, x-1); l < Math.min(data.dimx, x+2); l++) {
@@ -97,48 +97,45 @@ public class CloudClassification {
 
         if(x!=0){
             averageWind[t][x][y].add(data.advection[t][x-1][y]);
-            count++;
+            averageWind[t][x][y].setCount(averageWind[t][x][y].getCount()+1);
         }
 
         if(y!=0){
             averageWind[t][x][y].add(data.advection[t][x][y-1]);
-            count++;
+            averageWind[t][x][y].setCount(averageWind[t][x][y].getCount()+1);
         }
 
         if(x!=0 && y!=0){
             averageWind[t][x][y].add(data.advection[t][x-1][y-1]);
-            count++;
+            averageWind[t][x][y].setCount(averageWind[t][x][y].getCount()+1);
         }
 
         if(x!=data.dimx-1){
             averageWind[t][x][y].add(data.advection[t][x+1][y]);
-            count++;
+            averageWind[t][x][y].setCount(averageWind[t][x][y].getCount()+1);
         }
 
         if(y!=data.dimy-1){
             averageWind[t][x][y].add(data.advection[t][x][y+1]);
-            count++;
+            averageWind[t][x][y].setCount(averageWind[t][x][y].getCount()+1);
         }
 
         if(x!=data.dimx-1 && y!=data.dimy-1){
             averageWind[t][x][y].add(data.advection[t][x+1][y+1]);
-            count++;
+            averageWind[t][x][y].setCount(averageWind[t][x][y].getCount()+1);
         }
 
         if(x!=0 && y!=data.dimy-1){
             averageWind[t][x][y].add(data.advection[t][x-1][y+1]);
-            count++;
+            averageWind[t][x][y].setCount(averageWind[t][x][y].getCount()+1);
         }
 
         if(y!=0 && x!=data.dimx-1){
             averageWind[t][x][y].add(data.advection[t][x+1][y-1]);
-            count++;
+            averageWind[t][x][y].setCount(averageWind[t][x][y].getCount()+1);
         }
 
-        averageWind[t][x][y].setX(averageWind[t][x][y].getX()/count);
-        averageWind[t][x][y].setY(averageWind[t][x][y].getY()/count);
-
-        return averageWind[t][x][y];
+        return averageWind[t][x][y].getAverage();
     }
 
     /**
@@ -157,6 +154,7 @@ public class CloudClassification {
             for (int x = 0; x < data.dimx; x++) {
                 for (int y = 0; y < data.dimy; y++) {
                     velocity.add(data.advection[t][x][y]);
+                    velocity.setCount(velocity.getCount()+1);
 
                     Vector averageWind = getLocalAverage(t, x, y);
 
@@ -177,9 +175,8 @@ public class CloudClassification {
             }
             out += "\n";
         }
-        velocity.setX((velocity.getX()/data.dim()));
-        velocity.setY((velocity.getY()/data.dim()));
-        System.out.println("WindAverageSequential = "+velocity.toString()+"\n");
+        System.out.println(data.dimt+" "+data.dimx+" "+data.dimy);
+        System.out.println(velocity.getAverage());
         System.out.println(out);
     }
 
@@ -207,8 +204,8 @@ public class CloudClassification {
      * Takes in the name of the input file and reads in the data
      */
     public static void getData(){
-        data.readData("simplesample_input.txt");
-        //data.readData("largesample_input.txt");
+        //data.readData("simplesample_input.txt");
+        data.readData("largesample_input.txt");
         //System.out.print("Enter the file name: ");
         //Scanner in = new Scanner(System.in);
         //String file = in.nextLine();
