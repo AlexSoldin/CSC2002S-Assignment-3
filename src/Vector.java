@@ -7,14 +7,13 @@ public class Vector {
      */
     private float x;
     private float y;
-    private DecimalFormat df = new DecimalFormat("#.###");
+    private int count;
 
     /**
      * Parameterised contructor
      * @param x x value
      * @param y y value
      */
-
     public Vector(float x, float y) {
         this.x = x;
         this.y = y;
@@ -26,6 +25,7 @@ public class Vector {
     public Vector(){
         this.x = 0;
         this.y = 0;
+        this.count = 0;
     }
 
     /**
@@ -47,6 +47,14 @@ public class Vector {
         this.y = y;
     }
 
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
+
     /**
      * Accumulates x and y components in one vector
      * Used for sums and averages
@@ -55,6 +63,10 @@ public class Vector {
     public void add(Vector add){
         x += add.x;
         y += add.y;
+    }
+
+    public Vector getAverage(){
+        return new Vector(x/count, y/count);
     }
 
     /**
@@ -84,7 +96,9 @@ public class Vector {
         return "["+x+", "+y+"]";
     }
 
+
     public String roundedString(){
+        DecimalFormat df = new DecimalFormat("#.###");
         return "["+df.format(x)+", "+df.format(y)+"]";
     }
 }

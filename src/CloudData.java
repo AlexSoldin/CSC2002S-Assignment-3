@@ -9,7 +9,8 @@ public class CloudData {
 
 	Vector[][][] advection; // in-plane regular grid of wind vectors, that evolve over time
 	float [][][] convection; // vertical air movement strength, that evolves over time
-	float [] linear;
+	float [] linearAdvection;
+	int [] linearClassification;
 	int [][][] classification; // cloud type per grid point, evolving over time
 	int dimx, dimy, dimt; // data dimensions
 	int count = 0;
@@ -40,24 +41,23 @@ public class CloudData {
 			// initialize and load advection (wind direction and strength) and convection
 			advection = new Vector[dimt][dimx][dimy];
 			convection = new float[dimt][dimx][dimy];
-			linear = new float[dim()*3];
+			linearAdvection = new float[dim()*3];
 
 			for(int t = 0; t < dimt; t++) {
 				for (int x = 0; x < dimx; x++) {
 					for (int y = 0; y < dimy; y++) {
 						advection[t][x][y] = new Vector();
 						advection[t][x][y].setX(sc.nextFloat());
-						linear[count++] = advection[t][x][y].getX();
+						linearAdvection[count++] = advection[t][x][y].getX();
 						advection[t][x][y].setY(sc.nextFloat());
-						linear[count++] = advection[t][x][y].getY();
+						linearAdvection[count++] = advection[t][x][y].getY();
 						convection[t][x][y] = sc.nextFloat();
-						linear[count++] = convection[t][x][y];
+						linearAdvection[count++] = convection[t][x][y];
 					}
 				}
 			}
-
-			
 			classification = new int[dimt][dimx][dimy];
+			linearClassification = new int[dim()*3];
 			sc.close(); 
 		} 
 		catch (IOException e){ 

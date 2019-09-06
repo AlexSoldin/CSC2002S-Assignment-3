@@ -16,8 +16,8 @@ public class CloudClassification {
         return (System.currentTimeMillis() - startTime) / 1000.0f;
     } //time in seconds
 
-    static Vector FJ(float[] arr){
-        return fjPool.invoke(new Cloud(arr,0, data.linear.length));
+    static Resultant FJ(CloudData d){
+        return fjPool.invoke(new Cloud(d,0, d.linearAdvection.length));
     }
 
     /**
@@ -54,10 +54,8 @@ public class CloudClassification {
      * Calculate average wind velocity using Fork-Join framework
      */
     static void FJPool(){
-        Vector ans = FJ(data.linear);
-        ans.setX(ans.getX()/data.dim());
-        ans.setY(ans.getY()/data.dim());
-        System.out.println("WindAverageParallel = "+ans.toString()+"\n");
+        Resultant ans = FJ(data);
+        System.out.println(ans.toString());
     }
 
     /**
@@ -76,6 +74,74 @@ public class CloudClassification {
     }
 
     /**
+     * Calculates the local wind average for a specific point in the grid
+     * @param t
+     * @param x
+     * @param y
+     * @return vector containing average wind data
+     */
+    static Vector getLocalAverage(int t, int x, int y){
+        Vector[][][] averageWind = new Vector[data.dimt][data.dimx][data.dimy];
+        averageWind[t][x][y] = new Vector();
+        averageWind[t][x][y].add(data.advection[t][x][y]);
+        int count = 1;
+
+//                    int surrounding = 0;
+//                    for (int l = Math.max(0, x-1); l < Math.min(data.dimx, x+2); l++) {
+//                        for (int m = Math.max(0, y-1); m < Math.min(data.dimy, y+2); m++) {
+//                            averageWind[t][x][y].add(data.advection[t][l][m]);
+//                            surrounding++;
+//                        }
+//
+//                    }
+
+        if(x!=0){
+            averageWind[t][x][y].add(data.advection[t][x-1][y]);
+            count++;
+        }
+
+        if(y!=0){
+            averageWind[t][x][y].add(data.advection[t][x][y-1]);
+            count++;
+        }
+
+        if(x!=0 && y!=0){
+            averageWind[t][x][y].add(data.advection[t][x-1][y-1]);
+            count++;
+        }
+
+        if(x!=data.dimx-1){
+            averageWind[t][x][y].add(data.advection[t][x+1][y]);
+            count++;
+        }
+
+        if(y!=data.dimy-1){
+            averageWind[t][x][y].add(data.advection[t][x][y+1]);
+            count++;
+        }
+
+        if(x!=data.dimx-1 && y!=data.dimy-1){
+            averageWind[t][x][y].add(data.advection[t][x+1][y+1]);
+            count++;
+        }
+
+        if(x!=0 && y!=data.dimy-1){
+            averageWind[t][x][y].add(data.advection[t][x-1][y+1]);
+            count++;
+        }
+
+        if(y!=0 && x!=data.dimx-1){
+            averageWind[t][x][y].add(data.advection[t][x+1][y-1]);
+            count++;
+        }
+
+        averageWind[t][x][y].setX(averageWind[t][x][y].getX()/count);
+        averageWind[t][x][y].setY(averageWind[t][x][y].getY()/count);
+
+        return averageWind[t][x][y];
+    }
+
+    /**
      * Calculate average wind velocity using sequential methods
      * Classify different clouds and assign them codes
      * 0 - cumulus
@@ -84,7 +150,7 @@ public class CloudClassification {
      */
     static void sequentialMethod(){
         Vector velocity = new Vector();
-        Vector[][][] averageWind = new Vector[data.dimt][data.dimx][data.dimy];
+
         String out = "";
 
         for (int t = 0; t < data.dimt; t++) {
@@ -92,24 +158,13 @@ public class CloudClassification {
                 for (int y = 0; y < data.dimy; y++) {
                     velocity.add(data.advection[t][x][y]);
 
-                    averageWind[t][x][y] = new Vector();
-                    int surrounding = 0;
-                    for (int l = Math.max(0, x-1); l < Math.min(data.dimx, x+2); l++) {
-                        for (int m = Math.max(0, y - 1); m < Math.min(data.dimy, y + 2); m++) {
-                            averageWind[t][x][y].add(data.advection[t][l][m]);
-                            surrounding++;
-                        }
-                    }
+                    Vector averageWind = getLocalAverage(t, x, y);
 
-                    averageWind[t][x][y].setX(averageWind[t][x][y].getX()/surrounding);
-                    averageWind[t][x][y].setY(averageWind[t][x][y].getY()/surrounding);
-
-
-                    if(Math.abs(data.convection[t][x][y])>averageWind[t][x][y].getMagnitude()){
+                    if(Math.abs(data.convection[t][x][y])>averageWind.getMagnitude()){
                         data.classification[t][x][y] = 0;
                         out+= 0+" ";
                     }
-                    else if(averageWind[t][x][y].getMagnitude()>0.2 && averageWind[t][x][y].getMagnitude()>=Math.abs(data.convection[t][x][y])){
+                    else if(averageWind.getMagnitude()>0.2 && averageWind.getMagnitude()>=Math.abs(data.convection[t][x][y])){
                         data.classification[t][x][y] = 1;
                         out += 1+" ";
                     }
