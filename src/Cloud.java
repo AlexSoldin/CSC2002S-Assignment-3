@@ -69,7 +69,7 @@ public class Cloud extends RecursiveTask<Resultant> {
                     windData.setY(windData.getY() + data.linearAdvection[yComponent-3]);
                     windData.setCount(windData.getCount()+1);
                     if (current >= data.dimx) {
-                        //add above left
+                        //add top left
                         windData.setX(windData.getX() + data.linearAdvection[xComponent - 3 - data.dimx*3]);
                         windData.setY(windData.getY() + data.linearAdvection[yComponent - 3 - data.dimx*3]);
                         windData.setCount(windData.getCount()+1);
@@ -84,18 +84,18 @@ public class Cloud extends RecursiveTask<Resultant> {
                     }
                 }
                 if (current >= data.dimx) {
-                    //add above
+                    //add top
                     windData.setX(windData.getX() + data.linearAdvection[xComponent - data.dimx*3]);
                     windData.setY(windData.getY() + data.linearAdvection[yComponent - data.dimx*3]);
                     windData.setCount(windData.getCount()+1);
                     if (current % data.dimx != 0 && !topLeft) {
-                        //add above left
+                        //add top left
                         windData.setX(windData.getX() + data.linearAdvection[xComponent - data.dimx*3 - 3]);
                         windData.setY(windData.getY() + data.linearAdvection[yComponent - data.dimx*3 - 3]);
                         windData.setCount(windData.getCount()+1);
                     }
                     if ((current + 1) % data.dimx != 0) {
-                        //add above right
+                        //add top right
                         windData.setX(windData.getX() + data.linearAdvection[xComponent - data.dimx*3 + 3]);
                         windData.setY(windData.getY() + data.linearAdvection[yComponent - data.dimx*3 + 3]);
                         windData.setCount(windData.getCount()+1);
@@ -115,7 +115,7 @@ public class Cloud extends RecursiveTask<Resultant> {
                         bottomRight = true;
                     }
                     if (current >= data.dimx && !topRight) {
-                        //add above right
+                        //add top right
                         windData.setX(windData.getX() + data.linearAdvection[xComponent - data.dimx*3 + 3]);
                         windData.setY(windData.getY() + data.linearAdvection[yComponent - data.dimx*3 + 3]);
                         windData.setCount(windData.getCount()+1);
