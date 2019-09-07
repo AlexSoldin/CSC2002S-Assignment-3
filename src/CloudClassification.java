@@ -4,11 +4,12 @@ import java.util.concurrent.ForkJoinPool;
 public class CloudClassification {
 
     static CloudData data = new CloudData();
+    static Vector[][][] localWind = new Vector[data.dimt][data.dimx][data.dimy];;
     static float time;
 
-    static long startTime = 0;
     static final ForkJoinPool fjPool = new ForkJoinPool();
 
+    static long startTime = 0;
     private static void tick(){
         startTime = System.currentTimeMillis();
     }
@@ -17,7 +18,7 @@ public class CloudClassification {
     } //time in seconds
 
     static Resultant FJ(CloudData d){
-        return fjPool.invoke(new Cloud(d,0, d.linearAdvection.length));
+        return fjPool.invoke(new Cloud(d,0, d.dim()*3));
     }
 
     /**
@@ -29,9 +30,11 @@ public class CloudClassification {
         getData();
         //displayInput();
 
-        parallelStopWatch();
+        //parallelStopWatch();
+        FJPool();
 
-        sequentialStopWatch();
+        //sequentialStopWatch();
+        sequentialMethod();
 
     }
 
@@ -40,8 +43,8 @@ public class CloudClassification {
      */
     static void parallelStopWatch(){
 
-        for (int i = 0; i < 2; i++) {
-            System.out.println("Run "+(i+1)+":");
+        for (int i = 0; i < 10; i++) {
+            System.out.println("Parallel Run "+(i+1)+":");
             tick();
             FJPool();
             float time = tock();
@@ -55,7 +58,8 @@ public class CloudClassification {
      */
     static void FJPool(){
         Resultant ans = FJ(data);
-        System.out.println(ans.toString());
+        //System.out.println(ans.toString());
+        System.out.println(ans.getVelocity().getAverage().toString());
     }
 
     /**
@@ -63,8 +67,8 @@ public class CloudClassification {
      */
     static void sequentialStopWatch(){
 
-        for (int i = 0; i < 2; i++) {
-            System.out.println("Run "+(i+1)+":");
+        for (int i = 0; i < 10; i++) {
+            System.out.println("Sequential Run "+(i+1)+":");
             tick();
             sequentialMethod();
             float time = tock();
@@ -85,15 +89,6 @@ public class CloudClassification {
         averageWind[t][x][y] = new Vector();
         averageWind[t][x][y].add(data.advection[t][x][y]);
         averageWind[t][x][y].setCount(averageWind[t][x][y].getCount()+1);
-
-//                    int surrounding = 0;
-//                    for (int l = Math.max(0, x-1); l < Math.min(data.dimx, x+2); l++) {
-//                        for (int m = Math.max(0, y-1); m < Math.min(data.dimy, y+2); m++) {
-//                            averageWind[t][x][y].add(data.advection[t][l][m]);
-//                            surrounding++;
-//                        }
-//
-//                    }
 
         if(x!=0){
             averageWind[t][x][y].add(data.advection[t][x-1][y]);
@@ -157,12 +152,23 @@ public class CloudClassification {
                     velocity.setCount(velocity.getCount()+1);
 
                     Vector averageWind = getLocalAverage(t, x, y);
+                    localWind[t][x][y] = new Vector();
+                    int surrounding = 0;
 
-                    if(Math.abs(data.convection[t][x][y])>averageWind.getMagnitude()){
+                    for (int l = Math.max(0, x-1); l < Math.min(data.dimx, x+2); l++) {
+                        for (int m = Math.max(0, y-1); m < Math.min(data.dimy, y+2); m++) {
+                            localWind[t][x][y].add(data.advection[t][m][l]);
+                            surrounding++;
+                        }
+                    }
+                    localWind[t][x][y].setX(localWind[t][x][y].getX()/surrounding);
+                    localWind[t][x][y].setY(localWind[t][x][y].getY()/surrounding);
+
+                    if(Math.abs(data.convection[t][x][y])>localWind[t][x][y].getMagnitude()){
                         data.classification[t][x][y] = 0;
                         out+= 0+" ";
                     }
-                    else if(averageWind.getMagnitude()>0.2 && averageWind.getMagnitude()>=Math.abs(data.convection[t][x][y])){
+                    else if(localWind[t][x][y].getMagnitude()>0.2 && localWind[t][x][y].getMagnitude()>=Math.abs(data.convection[t][x][y])){
                         data.classification[t][x][y] = 1;
                         out += 1+" ";
                     }
@@ -175,9 +181,9 @@ public class CloudClassification {
             }
             out += "\n";
         }
-        System.out.println(data.dimt+" "+data.dimx+" "+data.dimy);
+        //System.out.println(data.dimt+" "+data.dimx+" "+data.dimy);
         System.out.println(velocity.getAverage());
-        System.out.println(out);
+        //System.out.println(out);
     }
 
     /**
@@ -204,12 +210,13 @@ public class CloudClassification {
      * Takes in the name of the input file and reads in the data
      */
     public static void getData(){
-        //data.readData("simplesample_input.txt");
-        data.readData("largesample_input.txt");
+        data.readData("simplesample_input.txt");
+        //data.readData("largesample_input.txt");
         //System.out.print("Enter the file name: ");
         //Scanner in = new Scanner(System.in);
         //String file = in.nextLine();
         //data.readData(file);
+        System.out.println("Completed Reading Data");
 
     }
 

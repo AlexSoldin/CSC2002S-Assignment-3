@@ -5,7 +5,7 @@ public class Cloud extends RecursiveTask<Resultant> {
     int hi;
     CloudData data;
     int middle;
-    static final int SEQUENTIAL_CUTOFF = 500;
+    static final int SEQUENTIAL_CUTOFF = 1000;
 
     /**
      * Parameterised constructor

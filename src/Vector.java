@@ -13,10 +13,12 @@ public class Vector {
      * Parameterised contructor
      * @param x x value
      * @param y y value
+     * @param count count value
      */
-    public Vector(float x, float y) {
+    public Vector(float x, float y, int count) {
         this.x = x;
         this.y = y;
+        this.count = count;
     }
 
     /**
@@ -70,7 +72,7 @@ public class Vector {
      * @return new vector object
      */
     public Vector getAverage(){
-        return new Vector(x/count, y/count);
+        return new Vector(x/count, y/count, count);
     }
 
     /**
@@ -88,7 +90,7 @@ public class Vector {
      * @return new vector
      */
     public Vector combine(Vector v){
-        return new Vector(x + v.getX(),y + v.getY());
+        return new Vector(x + v.getX(),y + v.getY(), count + v.getCount());
     }
 
     /**
