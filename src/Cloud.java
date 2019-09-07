@@ -5,7 +5,7 @@ public class Cloud extends RecursiveTask<Resultant> {
     int hi;
     CloudData data;
     int middle;
-    static final int SEQUENTIAL_CUTOFF = 10;
+    static final int SEQUENTIAL_CUTOFF = 500;
 
     /**
      * Parameterised constructor
@@ -18,7 +18,6 @@ public class Cloud extends RecursiveTask<Resultant> {
         this.lo = l;
         this.hi = h;
         this.data = d;
-        this.middle = (hi+lo)/2;
     }
 
 
@@ -42,7 +41,7 @@ public class Cloud extends RecursiveTask<Resultant> {
             boolean topLeft;
             boolean bottomLeft;
 
-            int count = lo%3;
+            int count = lo/3;
             int current = lo/3;
             current = current % (data.dimx*data.dimy);
 
@@ -147,13 +146,12 @@ public class Cloud extends RecursiveTask<Resultant> {
                 averageWind = windData.getAverage();
 
                 if (Math.abs(data.linearAdvection[uComponent]) > averageWind.getMagnitude()) {
-                    data.linearClassification[count] = 0;
-                } else if (averageWind.getMagnitude() > 0.2 && averageWind.getMagnitude()>=Math.abs(data.linearAdvection[uComponent])){
-                    data.linearClassification[count] = 1;
+                    data.linearClassification[count++] = 0;
+                } else if (averageWind.getMagnitude() > 0.2){
+                    data.linearClassification[count++] = 1;
                 } else {
-                    data.linearClassification[count] = 2;
+                    data.linearClassification[count++] = 2;
                 }
-                count++;
 
                 windData.setX(0);
                 windData.setY(0);
@@ -163,6 +161,7 @@ public class Cloud extends RecursiveTask<Resultant> {
             return new Resultant(data, velocity);
         }
         else {
+            middle = (hi+lo)/2;
             while (middle % 3 != 0) {
                 middle++;
             }

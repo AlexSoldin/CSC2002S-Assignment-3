@@ -71,13 +71,14 @@ public class CloudData {
 	}
 	
 	// write classification output to file
-	void writeData(String fileName, Vector wind){
+	void writeData(String fileName, Vector wind, char type){
 		 try{ 
 			 FileWriter fileWriter = new FileWriter(fileName);
 			 PrintWriter printWriter = new PrintWriter(fileWriter);
 			 printWriter.printf("%d %d %d\n", dimt, dimx, dimy);
 			 printWriter.printf("%f %f\n", wind.getX(), wind.getY());
-			 
+
+			 if(type == 'S') {
 			 for(int t = 0; t < dimt; t++){
 				 for(int x = 0; x < dimx; x++){
 					for(int y = 0; y < dimy; y++){
@@ -86,6 +87,18 @@ public class CloudData {
 				 }
 				 printWriter.printf("\n");
 		     }
+			 }
+			 else if (type == 'P') {
+				 for (int i = 0; i < dimt; i++) {
+					 for (int j = 0; j < dimx*dimy; j++) {
+						 printWriter.printf("%d ",linearClassification[i*dimx*dimy+j]);
+					 }
+					 printWriter.printf("\n");
+				 }
+			 }
+			 else{
+				 System.out.println("Unknown Type. S - sequential or P - parallel.");
+			 }
 				 
 			 printWriter.close();
 		 }

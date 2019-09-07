@@ -16,8 +16,8 @@ public class CloudClassification {
         return (System.currentTimeMillis() - startTime) ;
     } //time in seconds -> add / 1000.0f
 
-    static Resultant FJ(CloudData d){
-        return fjPool.invoke(new Cloud(d,0, d.dim()*3));
+    static Resultant FJ(CloudData data){
+        return fjPool.invoke(new Cloud(data,0, data.linearAdvection.length));
     }
 
     /**
@@ -42,7 +42,7 @@ public class CloudClassification {
      */
     static void parallelStopWatch(){
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 1; i++) {
             System.out.println("Parallel Run "+(i+1)+":");
             tick();
             FJPool();
@@ -57,8 +57,9 @@ public class CloudClassification {
      */
     static void FJPool(){
         Resultant ans = FJ(data);
-        //System.out.println(ans.toString());
+        ans.data.writeData("outputParallel.txt", ans.getVelocity().getAverage(), 'P');
         System.out.println(ans.getVelocity().getAverage().toString());
+        //System.out.println(ans.toString());
     }
 
     /**
@@ -175,6 +176,8 @@ public class CloudClassification {
     public static void getData(){
         //data.readData("simplesample_input.txt");
         data.readData("largesample_input.txt");
+        //data.readData("genInput20_1024_1024.txt");
+
         //System.out.println("<data file name> <output file name>");
         //Scanner in = new Scanner(System.in);
         //String fileIn = in.nextLine();
@@ -182,7 +185,7 @@ public class CloudClassification {
         //data.readData(fileIn);
         //data.writeData(fileOut);
 
-        System.out.println("Completed Reading Data");
+        System.out.println("Completed Reading Data\n");
 
     }
 

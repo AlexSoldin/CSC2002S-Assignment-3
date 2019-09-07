@@ -5,9 +5,9 @@ public class Vector {
     /**
      * Global variables
      */
-    private float x;
-    private float y;
-    private int count;
+    public float x;
+    public float y;
+    public int count;
 
     /**
      * Parameterised contructor
@@ -65,6 +65,7 @@ public class Vector {
     public void add(Vector add){
         x += add.x;
         y += add.y;
+        count += add.count;
     }
 
     /**
