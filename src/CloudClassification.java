@@ -13,8 +13,8 @@ public class CloudClassification {
         startTime = System.currentTimeMillis();
     }
     private static float tock(){
-        return (System.currentTimeMillis() - startTime) / 1000.0f;
-    } //time in seconds
+        return (System.currentTimeMillis() - startTime) ;
+    } //time in seconds -> add / 1000.0f
 
     static Resultant FJ(CloudData d){
         return fjPool.invoke(new Cloud(d,0, d.dim()*3));
@@ -42,12 +42,12 @@ public class CloudClassification {
      */
     static void parallelStopWatch(){
 
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 10; i++) {
             System.out.println("Parallel Run "+(i+1)+":");
             tick();
             FJPool();
             float time = tock();
-            System.out.println((i+1)+" - parallelMethod took "+ time +" seconds\n");
+            System.out.println((i+1)+" - parallelMethod took "+ time +" ms\n");
         }
 
     }
@@ -66,12 +66,12 @@ public class CloudClassification {
      */
     static void sequentialStopWatch(){
 
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 10; i++) {
             System.out.println("Sequential Run "+(i+1)+":");
             tick();
             sequentialMethod();
             float time = tock();
-            System.out.println((i+1)+" - sequentialMethod took "+ time +" seconds\n");
+            System.out.println((i+1)+" - sequentialMethod took "+ time +" ms\n");
         }
 
     }
@@ -145,7 +145,7 @@ public class CloudClassification {
                 }
             }
         }
-        //System.out.println(data.dimt+" "+data.dimx+" "+data.dimy);
+        System.out.println(data.dimt+" "+data.dimx+" "+data.dimy);
         System.out.println(velocity.getAverage());
     }
 

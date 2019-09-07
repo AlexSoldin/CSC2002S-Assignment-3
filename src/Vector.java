@@ -102,7 +102,10 @@ public class Vector {
         return x+" "+y;
     }
 
-
+    /**
+     * Form of toString method returning rounded off values
+     * @return rounded of toString method
+     */
     public String roundedString(){
         DecimalFormat df = new DecimalFormat("#.###");
         return "["+df.format(x)+", "+df.format(y)+"]";
