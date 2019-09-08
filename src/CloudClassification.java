@@ -5,6 +5,7 @@ public class CloudClassification {
 
     static CloudData data = new CloudData();
     static float time;
+    static String fileIn, fileOut;
 
     static final ForkJoinPool fjPool = new ForkJoinPool();
 
@@ -32,7 +33,7 @@ public class CloudClassification {
         parallelStopWatch();
         //FJPool();
 
-        sequentialStopWatch();
+        //sequentialStopWatch();
         //sequentialMethod();
 
     }
@@ -41,14 +42,16 @@ public class CloudClassification {
      * A stopwatch method to time each parallel run of the program
      */
     static void parallelStopWatch(){
-
-        for (int i = 0; i < 10; i++) {
+        float sum = 0;
+        for (int i = 0; i < 1; i++) {
             System.out.println("Parallel Run "+(i+1)+":");
             tick();
             FJPool();
             float time = tock();
+            sum += time;
             System.out.println((i+1)+" - parallelMethod took "+ time +" ms\n");
         }
+        //System.out.println("Total of 10: "+ sum);
 
     }
 
@@ -57,7 +60,7 @@ public class CloudClassification {
      */
     static void FJPool(){
         Resultant ans = FJ(data);
-        ans.data.writeData("outputParallel.txt", ans.getVelocity().getAverage(), 'P');
+        ans.data.writeData(fileOut, ans.getVelocity().getAverage(), 'P');
         //System.out.println(ans.getVelocity().getAverage().toString());
         //System.out.println(ans.toString());
     }
@@ -66,14 +69,16 @@ public class CloudClassification {
      * A stopwatch method to time each sequential run of the program
      */
     static void sequentialStopWatch(){
-
-        for (int i = 0; i < 1; i++) {
+        float sum = 0;
+        for (int i = 0; i < 10; i++) {
             System.out.println("Sequential Run "+(i+1)+":");
             tick();
             sequentialMethod();
             float time = tock();
+            sum += time;
             System.out.println((i+1)+" - sequentialMethod took "+ time +" ms\n");
         }
+        //System.out.println("Total of 10: "+ sum);
 
     }
 
@@ -148,7 +153,7 @@ public class CloudClassification {
         }
         //System.out.println(data.dimt+" "+data.dimx+" "+data.dimy);
         //System.out.println(velocity.getAverage());
-        data.writeData("outputSequential.txt", velocity.getAverage(), 'S');
+        //data.writeData(fileOut, velocity.getAverage(), 'S');
     }
 
     /**
@@ -177,12 +182,13 @@ public class CloudClassification {
     public static void getData(){
         //data.readData("simplesample_input.txt");
         //data.readData("largesample_input.txt");
-        //data.readData("genInput20_1024_1024.txt");
+        //data.readData("genInput40_512_512.txt");
 
         System.out.println("<data file name> <output file name>");
         Scanner in = new Scanner(System.in);
-        String fileIn = in.nextLine();
-        String fileOut = in.nextLine();
+        String[] line = in.nextLine().split(" ");
+        fileIn = line[0];
+        fileOut = line[1];
         data.readData(fileIn);
 
         System.out.println("Completed Reading Data\n");
