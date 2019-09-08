@@ -42,7 +42,7 @@ public class CloudClassification {
      */
     static void parallelStopWatch(){
 
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 10; i++) {
             System.out.println("Parallel Run "+(i+1)+":");
             tick();
             FJPool();
@@ -58,7 +58,7 @@ public class CloudClassification {
     static void FJPool(){
         Resultant ans = FJ(data);
         ans.data.writeData("outputParallel.txt", ans.getVelocity().getAverage(), 'P');
-        System.out.println(ans.getVelocity().getAverage().toString());
+        //System.out.println(ans.getVelocity().getAverage().toString());
         //System.out.println(ans.toString());
     }
 
@@ -67,7 +67,7 @@ public class CloudClassification {
      */
     static void sequentialStopWatch(){
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 1; i++) {
             System.out.println("Sequential Run "+(i+1)+":");
             tick();
             sequentialMethod();
@@ -105,7 +105,7 @@ public class CloudClassification {
                     }
                     if(y!=0){
                         averageWind[t][x][y].add(data.advection[t][x][y-1]);
-                        averageWind[t][x][y].setCount(averageWind[t][x][y].getCount()+1);;
+                        averageWind[t][x][y].setCount(averageWind[t][x][y].getCount()+1);
                     }
                     if(x!=0 && y!=0){
                         averageWind[t][x][y].add(data.advection[t][x-1][y-1]);
@@ -146,8 +146,9 @@ public class CloudClassification {
                 }
             }
         }
-        System.out.println(data.dimt+" "+data.dimx+" "+data.dimy);
-        System.out.println(velocity.getAverage());
+        //System.out.println(data.dimt+" "+data.dimx+" "+data.dimy);
+        //System.out.println(velocity.getAverage());
+        data.writeData("outputSequential.txt", velocity.getAverage(), 'S');
     }
 
     /**
@@ -175,15 +176,14 @@ public class CloudClassification {
      */
     public static void getData(){
         //data.readData("simplesample_input.txt");
-        data.readData("largesample_input.txt");
+        //data.readData("largesample_input.txt");
         //data.readData("genInput20_1024_1024.txt");
 
-        //System.out.println("<data file name> <output file name>");
-        //Scanner in = new Scanner(System.in);
-        //String fileIn = in.nextLine();
-        //String fileOut = in.nextLine();
-        //data.readData(fileIn);
-        //data.writeData(fileOut);
+        System.out.println("<data file name> <output file name>");
+        Scanner in = new Scanner(System.in);
+        String fileIn = in.nextLine();
+        String fileOut = in.nextLine();
+        data.readData(fileIn);
 
         System.out.println("Completed Reading Data\n");
 
