@@ -10,5 +10,5 @@ The given problem requires the program to take the output of a weather simulatio
 the resultant wind direction and diﬀerent types of clouds that may be produced. 
 These types of clouds include: Cumulus (0), Striated Stratus (1) and Amorphous Stratus (2).
 
-The Makefile will compile and run the CloudClassification.java program which takes in <inputFileName><outputFileName> and 
+The Makefile will compile and run the CloudClassification.java program which takes in "inputFileName outputFileName" and 
 performs the necessary calculations and classifications.
