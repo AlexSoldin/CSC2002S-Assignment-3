@@ -13,6 +13,6 @@ These types of clouds include: Cumulus (0), Striated Stratus (1) and Amorphous S
 The Makefile will compile and run the CloudClassification.java program which takes in "inputFileName outputFileName" and 
 performs the necessary calculations and classifications.
 
-Command - Result
-make - compiles programs
-make run - run the main method CloudClassification.java
+Some general commands include:
+'make' - compiles programs
+'make run' - run the main method CloudClassification.java
